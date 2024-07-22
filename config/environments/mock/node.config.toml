@@ -1,0 +1,41 @@
+[Log]
+Environment = "development" # "production" or "development"
+Level = "info"
+Outputs = ["stderr"]
+
+[Etherman]
+URL = "http://your.L1node.url"
+
+[EthTxManager]
+FrequencyToMonitorTxs = "3s"
+WaitTxToBeMined = "2m"
+ForcedGas = 0
+GasPriceMarginFactor = 1.1
+MaxGasPriceLimit = 0
+
+[SequenceSender]
+WaitPeriodSendSequence = "5s"
+MaxTxSizeForL1 = 131072
+SenderAddress = "0x70997970c51812dc3a010c7d01b50e0d17dc79c8"
+L2Coinbase = "0xD6DdA5AA7749142B7fDa3Fe4662C9f346101B8A6"
+MaxBatchesForL1 = 20
+MaxBatchBytesSize = 120000
+
+[DataAvailability]
+Hostname = "disperser-holesky.eigenda.xyz"
+Port = 443
+Timeout = "30s"
+UseSecureGrpcFlag = true
+RetrieveBlobStatusPeriod = "5s"
+BlobStatusConfirmedTimeout = "15m"
+
+[L1Config]
+chainId = 1
+polygonZkEVMAddress = "0x519E42c24163192Dca44CD3fBDCEBF6be9130987"
+polygonRollupManagerAddress = "0x5132A183E9F3CB7C848b0AAC5Ae0c4f0491B7aB2"
+polTokenAddress = "0x455e53CBB86018Ac2B8092FdCd39d8444aFFC3F6"
+polygonZkEVMGlobalExitRootAddress = "0x580bda1e7A0CFAe92Fa7F6c20A3794F169CE3CFb"
+
+[Key]
+Path = "/etc/keystore/"
+Password = "123"

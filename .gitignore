@@ -1,0 +1,8 @@
+build/
+dist/
+wallets/
+
+**/.DS_Store
+.vscode
+.env
+.config.toml
