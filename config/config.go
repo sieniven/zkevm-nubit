@@ -9,7 +9,7 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"github.com/sieniven/zkevm-nubit/config/types"
 
-	// "github.com/sieniven/zkevm-nubit/dataavailability"
+	"github.com/sieniven/zkevm-nubit/dataavailability"
 	"github.com/sieniven/zkevm-nubit/etherman"
 	"github.com/sieniven/zkevm-nubit/ethtxmanager"
 	"github.com/sieniven/zkevm-nubit/log"
@@ -34,13 +34,13 @@ const (
 //
 // [TOML format]: https://en.wikipedia.org/wiki/TOML
 type Config struct {
-	Etherman       etherman.Config
-	EthTxManager   ethtxmanager.Config
-	SequenceSender sequencesender.Config
-	L1Config       etherman.L1Config
-	Key            types.KeystoreFileConfig
-	// DataAvailability dataavailability.Config
-	Log log.Config
+	Etherman         etherman.Config
+	EthTxManager     ethtxmanager.Config
+	SequenceSender   sequencesender.Config
+	L1Config         etherman.L1Config
+	Key              types.KeystoreFileConfig
+	DataAvailability dataavailability.Config
+	Log              log.Config
 }
 
 // Default parses the default configuration values

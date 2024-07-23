@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/0xPolygonHermez/zkevm-node/etherman/types"
-	"github.com/0xPolygonHermez/zkevm-node/log"
+	"github.com/sieniven/zkevm-nubit/etherman/types"
+	"github.com/sieniven/zkevm-nubit/log"
+
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/crypto"
 )
