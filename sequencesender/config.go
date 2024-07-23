@@ -2,7 +2,7 @@ package sequencesender
 
 import (
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/sieniven/zkevm-eigenda/config/types"
+	"github.com/sieniven/zkevm-nubit/config/types"
 )
 
 type Config struct {

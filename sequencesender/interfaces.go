@@ -3,7 +3,7 @@ package sequencesender
 import (
 	"context"
 
-	ethmanTypes "github.com/sieniven/zkevm-eigenda/etherman/types"
+	ethmanTypes "github.com/sieniven/zkevm-nubit/etherman/types"
 )
 
 type dataAbilitier interface {

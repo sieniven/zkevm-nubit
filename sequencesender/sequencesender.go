@@ -7,11 +7,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/sieniven/zkevm-eigenda/etherman"
-	"github.com/sieniven/zkevm-eigenda/etherman/types"
-	"github.com/sieniven/zkevm-eigenda/ethtxmanager"
-	"github.com/sieniven/zkevm-eigenda/log"
-	batchTypes "github.com/sieniven/zkevm-eigenda/sequencesender/types"
+	"github.com/sieniven/zkevm-nubit/etherman"
+	"github.com/sieniven/zkevm-nubit/etherman/types"
+	"github.com/sieniven/zkevm-nubit/ethtxmanager"
+	"github.com/sieniven/zkevm-nubit/log"
+	batchTypes "github.com/sieniven/zkevm-nubit/sequencesender/types"
 )
 
 const (

@@ -4,7 +4,7 @@ import (
 	"reflect"
 
 	"github.com/ethereum/go-ethereum/common"
-	polygonzkevm "github.com/sieniven/zkevm-eigenda/etherman/smartcontracts/polygonvalidium_xlayer"
+	polygonzkevm "github.com/sieniven/zkevm-nubit/etherman/smartcontracts/polygonvalidium_xlayer"
 )
 
 // Sequence represents an operation sent to the PoE smart contract to be
