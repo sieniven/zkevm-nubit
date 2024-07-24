@@ -40,4 +40,7 @@ type Config struct {
 
 	// Mock config to replicate the BatchConstraintsCfg in the zkevm node.
 	MaxBatchBytesSize uint64 `mapstructure:"MaxBatchBytesSize"`
+
+	// DA Permit API private key
+	DAPermitApiPrivateKey types.KeystoreFileConfig `mapstructure:"DAPermitApiPrivateKey"`
 }

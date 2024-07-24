@@ -31,9 +31,29 @@ func start(cliCtx *cli.Context) error {
 		panic(err)
 	}
 
-	// Create new data avaiability manager
-	p := nubit.NewDataAvailabilityProvider(c.DataAvailability)
-	da := dataavailability.New(c.DataAvailability, p)
+	// Create new data avaiability backend and set sequencer flag to false
+	isSequencer := false
+	dacAddr, err := etherMan.GetDAProtocolAddr()
+	if err != nil {
+		return fmt.Errorf("error getting trusted sequencer URI. Error: %v", err)
+	}
+	_, pk, err := etherMan.LoadAuthFromKeyStore(c.SequenceSender.DAPermitApiPrivateKey.Path, c.SequenceSender.DAPermitApiPrivateKey.Password)
+	if err != nil {
+		return err
+	}
+
+	log.Infof("from pk %s", crypto.PubkeyToAddress(pk.PublicKey))
+	daBackend, err := nubit.NewDABackend(
+		c.Etherman.URL,
+		dacAddr,
+		pk,
+		&c.DataAvailability,
+	)
+	if err != nil {
+		return err
+	}
+
+	da, err := dataavailability.New(isSequencer, daBackend)
 	etherMan.SetDataProvider(da)
 
 	// Initialize eth tx manager instance
@@ -55,7 +75,7 @@ func start(cliCtx *cli.Context) error {
 // creates a new instance of the mock sequence sender for the mock node.
 func createMockSequenceSender(cfg config.Config, etm *ethtxmanager.Client, etherMan *etherman.Client) *sequencesender.SequenceSender {
 	// Create new data avaiability manager
-	da, err := newDataAvailability(cfg)
+	da, err := newDataAvailability(cfg, etherMan)
 	if err != nil {
 		panic(err)
 	}
@@ -86,10 +106,29 @@ func newEtherman(c config.Config) (*etherman.Client, error) {
 	return etherman.NewClient(c.Etherman, c.L1Config)
 }
 
-func newDataAvailability(c config.Config) (*dataavailability.DataAvailability, error) {
-	p := nubit.NewDataAvailabilityProvider(c.DataAvailability)
-	da := dataavailability.New(c.DataAvailability, p)
-	return da, nil
+func newDataAvailability(c config.Config, etherMan *etherman.Client) (*dataavailability.DataAvailability, error) {
+	isSequencer := false
+	dacAddr, err := etherMan.GetDAProtocolAddr()
+	if err != nil {
+		return nil, fmt.Errorf("error getting trusted sequencer URI. Error: %v", err)
+	}
+	_, pk, err := etherMan.LoadAuthFromKeyStore(c.SequenceSender.DAPermitApiPrivateKey.Path, c.SequenceSender.DAPermitApiPrivateKey.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	log.Infof("from pk %s", crypto.PubkeyToAddress(pk.PublicKey))
+	daBackend, err := nubit.NewDABackend(
+		c.Etherman.URL,
+		dacAddr,
+		pk,
+		&c.DataAvailability,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return dataavailability.New(isSequencer, daBackend)
 }
 
 func setupLog(c log.Config) {

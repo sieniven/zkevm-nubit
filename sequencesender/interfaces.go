@@ -7,5 +7,5 @@ import (
 )
 
 type dataAbilitier interface {
-	PostSequence(ctx context.Context, sequences []ethmanTypes.Sequence) ([]byte, []byte, error)
+	PostSequence(ctx context.Context, sequences []ethmanTypes.Sequence) ([]byte, error)
 }

@@ -4,7 +4,6 @@ import (
 	"context"
 	"crypto/ecdsa"
 	"encoding/hex"
-	"fmt"
 	"time"
 
 	daTypes "github.com/0xPolygon/cdk-data-availability/types"
@@ -27,7 +26,7 @@ type NubitDABackend struct {
 	batchesDataSize       uint64
 }
 
-func New(
+func NewDABackend(
 	l1RPCURL string,
 	dataCommitteeAddr common.Address,
 	privKey *ecdsa.PrivateKey,
@@ -124,13 +123,13 @@ func (backend *NubitDABackend) PostSequence(ctx context.Context, batchesData [][
 		return nil, err
 	}
 
-	// TODO: use bridge API data
-	batchDAData := BatchDAData{ID: id}
-	log.Infof("Nubit DA data ID: %+v", batchDAData)
-	returnData, err := batchDAData.Encode()
-	if err != nil {
-		return nil, fmt.Errorf("Encode batch data failed: %w", err)
-	}
+	// // TODO: use bridge API data
+	// batchDAData := BatchDAData{ID: id}
+	// log.Infof("Nubit DA data ID: %+v", batchDAData)
+	// returnData, err := batchDAData.Encode()
+	// if err != nil {
+	// 	return nil, fmt.Errorf("Encode batch data failed: %w", err)
+	// }
 
 	// Sign sequence
 	sequence := daTypes.Sequence{}
@@ -138,10 +137,9 @@ func (backend *NubitDABackend) PostSequence(ctx context.Context, batchesData [][
 		sequence = append(sequence, seq)
 	}
 	signedSequence, err := sequence.Sign(backend.privKey)
-	returnData = append(returnData, sequence.HashToSign()...)
-	returnData = append(returnData, signedSequence.Signature...)
+	signature := append(sequence.HashToSign(), signedSequence.Signature...)
 
-	return returnData, nil
+	return signature, nil
 }
 
 func (a *NubitDABackend) GetSequence(ctx context.Context, batchHashes []common.Hash, dataAvailabilityMessage []byte) ([][]byte, error) {

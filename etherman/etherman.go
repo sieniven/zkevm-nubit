@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/sieniven/zkevm-nubit/dataavailability"
+	dataavailabilityprotocol "github.com/sieniven/zkevm-nubit/etherman/smartcontracts/dataavailabilityprotocol_xlayer"
 	"github.com/sieniven/zkevm-nubit/etherman/smartcontracts/polygonrollupmanager"
 	polygonzkevm "github.com/sieniven/zkevm-nubit/etherman/smartcontracts/polygonvalidium_xlayer"
 	ethmanTypes "github.com/sieniven/zkevm-nubit/etherman/types"
@@ -58,6 +59,7 @@ type Client struct {
 	l1Cfg         L1Config
 	cfg           Config
 	auth          map[common.Address]bind.TransactOpts // empty in case of read-only client
+	DAProtocol    *dataavailabilityprotocol.Dataavailabilityprotocol
 	da            dataavailability.BatchDataProvider
 }
 
@@ -109,6 +111,14 @@ func NewClient(cfg Config, l1Config L1Config) (*Client, error) {
 		fmt.Printf("error creating NewPolygonrollupmanager client (%s)\n", l1Config.RollupManagerAddr.String())
 		return nil, err
 	}
+	dapAddr, err := zkevm.DataAvailabilityProtocol(&bind.CallOpts{Pending: false})
+	if err != nil {
+		return nil, err
+	}
+	dap, err := dataavailabilityprotocol.NewDataavailabilityprotocol(dapAddr, ethClient)
+	if err != nil {
+		return nil, err
+	}
 	var scAddresses []common.Address
 	scAddresses = append(scAddresses, l1Config.ZkEVMAddr, l1Config.RollupManagerAddr, l1Config.EigenDAVerifierManagerAddr)
 
@@ -124,6 +134,7 @@ func NewClient(cfg Config, l1Config L1Config) (*Client, error) {
 		EthClient:     ethClient,
 		ZkEVM:         zkevm,
 		RollupManager: rollupManager,
+		DAProtocol:    dap,
 		SCAddresses:   scAddresses,
 		RollupID:      rollupID,
 		GasProviders: externalGasProviders{
@@ -134,10 +145,6 @@ func NewClient(cfg Config, l1Config L1Config) (*Client, error) {
 		cfg:   cfg,
 		auth:  map[common.Address]bind.TransactOpts{},
 	}, nil
-}
-
-func (etherMan *Client) VerifyDataAvailabilityMessage(dataAvailabilityMessage []byte) error {
-	return etherMan.EigendaVerifier.VerifyMessage(&bind.CallOpts{Pending: false}, [32]byte{}, dataAvailabilityMessage)
 }
 
 // EstimateGasSequenceBatchesXLayer estimates gas for sending batches
@@ -385,6 +392,16 @@ func (etherMan *Client) CheckTxWasMined(ctx context.Context, txHash common.Hash)
 	return true, receipt, nil
 }
 
+// GetDAProtocolAddr returns the address of the data availability protocol
+func (etherMan *Client) GetDAProtocolAddr() (common.Address, error) {
+	return etherMan.ZkEVM.DataAvailabilityProtocol(&bind.CallOpts{Pending: false})
+}
+
+// GetDAProtocolName returns the name of the data availability protocol
+func (etherMan *Client) GetDAProtocolName() (string, error) {
+	return etherMan.DAProtocol.GetProcotolName(&bind.CallOpts{Pending: false})
+}
+
 // SetDataAvailabilityProtocol sets the address for the new data availability protocol
 func (etherMan *Client) SetDataAvailabilityProtocol(from, daAddress common.Address) (*types.Transaction, error) {
 	auth, err := etherMan.GetAuthByAddress(from)
@@ -392,6 +409,17 @@ func (etherMan *Client) SetDataAvailabilityProtocol(from, daAddress common.Addre
 		return nil, err
 	}
 	return etherMan.ZkEVM.SetDataAvailabilityProtocol(&auth, daAddress)
+}
+
+// GetTrustedSequencerURL Gets the trusted sequencer url from rollup smc
+func (etherMan *Client) GetTrustedSequencerURL() (string, error) {
+	url, err := etherMan.ZkEVM.TrustedSequencerURL(&bind.CallOpts{Pending: false})
+	//TODO: remove this code because is for compatibility with oldZkEVM
+	if err != nil || url == "" {
+		return url, fmt.Errorf("Failed to get trusted sequncer URL from zkevm contract")
+	}
+	// err is always nil
+	return url, nil
 }
 
 // WaitTxToBeMined waits until a tx has been mined or the given timeout expires
