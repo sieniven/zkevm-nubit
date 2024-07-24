@@ -7,12 +7,12 @@ import (
 	"time"
 
 	daTypes "github.com/0xPolygon/cdk-data-availability/types"
+	polygondatacommittee "github.com/0xPolygonHermez/zkevm-node/etherman/smartcontracts/polygondatacommittee_xlayer"
+	"github.com/0xPolygonHermez/zkevm-node/log"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/rollkit/go-da"
 	"github.com/rollkit/go-da/proxy"
-	polygondatacommittee "github.com/sieniven/zkevm-nubit/etherman/smartcontracts/polygondatacommittee_xlayer"
-	"github.com/sieniven/zkevm-nubit/log"
 )
 
 type NubitDABackend struct {
@@ -43,10 +43,18 @@ func NewDABackend(
 	if err != nil {
 		return nil, err
 	}
+	// TODO: Check if name byte array requires zero padding
 	name, err := hex.DecodeString(cfg.NubitNamespace)
+	if err != nil {
+		log.Errorf("error decoding NubitDA namespace config: %+v", err)
+		return nil, err
+	}
 	dataCommittee, err := polygondatacommittee.NewPolygondatacommitteeXlayer(dataCommitteeAddr, ethClient)
-
+	if err != nil {
+		return nil, err
+	}
 	log.Infof("NubitDABackend namespace: %s ", string(name))
+
 	return &NubitDABackend{
 		dataCommitteeContract: dataCommittee,
 		config:                cfg,
@@ -102,10 +110,9 @@ func (backend *NubitDABackend) PostSequence(ctx context.Context, batchesData [][
 
 	// Get proof
 	tries := uint64(0)
-	dataProof := [][]byte{}
 	posted := false
 	for tries < backend.config.NubitGetProofMaxRetry {
-		dataProof, err = backend.client.GetProofs(ctx, id, backend.ns)
+		dataProof, err := backend.client.GetProofs(ctx, id, backend.ns)
 		if err != nil {
 			log.Infof("Proof not available: %s", err)
 		}
@@ -137,6 +144,10 @@ func (backend *NubitDABackend) PostSequence(ctx context.Context, batchesData [][
 		sequence = append(sequence, seq)
 	}
 	signedSequence, err := sequence.Sign(backend.privKey)
+	if err != nil {
+		log.Errorf("Failed to sign sequence with pk: %v", err)
+		return nil, err
+	}
 	signature := append(sequence.HashToSign(), signedSequence.Signature...)
 
 	return signature, nil
