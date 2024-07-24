@@ -26,7 +26,7 @@ type NubitDABackend struct {
 	batchesDataSize       uint64
 }
 
-func NewDABackend(
+func NewNubitDABackend(
 	l1RPCURL string,
 	dataCommitteeAddr common.Address,
 	privKey *ecdsa.PrivateKey,
