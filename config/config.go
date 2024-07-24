@@ -8,8 +8,8 @@ import (
 
 	"github.com/mitchellh/mapstructure"
 	"github.com/sieniven/zkevm-nubit/config/types"
+	"github.com/sieniven/zkevm-nubit/dataavailability/nubit"
 
-	"github.com/sieniven/zkevm-nubit/dataavailability"
 	"github.com/sieniven/zkevm-nubit/etherman"
 	"github.com/sieniven/zkevm-nubit/ethtxmanager"
 	"github.com/sieniven/zkevm-nubit/log"
@@ -39,7 +39,7 @@ type Config struct {
 	SequenceSender   sequencesender.Config
 	L1Config         etherman.L1Config
 	Key              types.KeystoreFileConfig
-	DataAvailability dataavailability.Config
+	DataAvailability nubit.Config
 	Log              log.Config
 }
 

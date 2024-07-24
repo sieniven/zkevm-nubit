@@ -25,10 +25,11 @@ GasOffset = 80000
 MaxBatchesForL1 = 10
 
 [DataAvailability]
-Hostname = "disperser-holesky.eigenda.xyz"
-Port = 443
-Timeout = "30s"
-UseSecureGrpcFlag = true
-RetrieveBlobStatusPeriod = "5s"
-BlobStatusConfirmedTimeout = "15m"
+NubitRpcURL = "disperser-holesky.eigenda.xyz"
+NubitModularAppName = 443
+NubitAuthKey = "30s"
+NubitNamespace = true
+NubitMaxBatchesSize = "102400"
+NubitGetProofMaxRetry = "10"
+NubitGetProofWaitPeriod = "5s"
 `

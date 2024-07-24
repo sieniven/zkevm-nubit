@@ -10,6 +10,19 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
+// ArgUint64 helps to marshal uint64 values provided in the RPC requests
+type ArgUint64 uint64
+
+// ArgBytes helps to marshal byte array values provided in the RPC requests
+type ArgBytes []byte
+
+// BatchData is an abbreviated structure that only contains the number and L2 batch data
+type BatchData struct {
+	Number      ArgUint64 `json:"number"`
+	BatchL2Data ArgBytes  `json:"batchL2Data,omitempty"`
+	Empty       bool      `json:"empty"`
+}
+
 // DABackender is an interface for components that store and retrieve batch data
 type DABackender interface {
 	SequenceRetriever
@@ -54,5 +67,5 @@ type DataManager interface {
 // ZKEVMClientTrustedBatchesGetter contains the methods required to interact with zkEVM-RPC
 type ZKEVMClientTrustedBatchesGetter interface {
 	BatchByNumber(ctx context.Context, number *big.Int) (*types.Batch, error)
-	BatchesByNumbers(ctx context.Context, numbers []*big.Int) ([]*types.BatchData, error)
+	BatchesByNumbers(ctx context.Context, numbers []*big.Int) ([]BatchData, error)
 }
