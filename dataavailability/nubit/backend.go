@@ -91,7 +91,7 @@ func (backend *NubitDABackend) PostSequence(ctx context.Context, batchesData [][
 	backend.commitTime = time.Now()
 	backend.batchesData = [][]byte{}
 
-	// Get proof
+	// Get proof of batches data on NubitDA layer
 	tries := uint64(0)
 	posted := false
 	for tries < backend.config.NubitGetProofMaxRetry {
