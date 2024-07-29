@@ -2,6 +2,8 @@ package nubit
 
 import "time"
 
+const NubitMinCommitTime time.Duration = 12 * time.Second
+
 // Config is the NubitDA backend configurations
 type Config struct {
 	NubitRpcURL             string        `mapstructure:"NubitRpcURL"`
