@@ -17,7 +17,7 @@ import (
 type NubitDABackend struct {
 	client      da.DA
 	config      *Config
-	ns          da.Namespace
+	namespace   da.Namespace
 	privKey     *ecdsa.PrivateKey
 	commitTime  time.Time
 	batchesData [][]byte
@@ -47,7 +47,7 @@ func NewNubitDABackend(
 	return &NubitDABackend{
 		config:      cfg,
 		privKey:     privKey,
-		ns:          name,
+		namespace:   name,
 		client:      cn,
 		commitTime:  time.Now(),
 		batchesData: [][]byte{},
@@ -78,14 +78,14 @@ func (backend *NubitDABackend) PostSequence(ctx context.Context, batchesData [][
 
 	// Encode NubitDA blob data
 	data := EncodeSequence(backend.batchesData)
-	ids, err := backend.client.Submit(ctx, [][]byte{data}, -1, backend.ns)
+	ids, err := backend.client.Submit(ctx, [][]byte{data}, -1, backend.namespace)
 	// Ensure only a single blob ID returned
 	if err != nil || len(ids) != 1 {
 		log.Errorf("Submit batch data with NubitDA client failed: %s", err)
 		return nil, err
 	}
 	blobID := ids[0]
-	log.Infof("Data submitted to Nubit DA: %d bytes against namespace %v sent with id %#x", batchesSize, backend.ns, blobID)
+	log.Infof("Data submitted to Nubit DA: %d bytes against namespace %v sent with id %#x", batchesSize, backend.namespace, blobID)
 
 	// Reset batches data cache and DA commit time
 	backend.commitTime = time.Now()
@@ -95,7 +95,7 @@ func (backend *NubitDABackend) PostSequence(ctx context.Context, batchesData [][
 	tries := uint64(0)
 	posted := false
 	for tries < backend.config.NubitGetProofMaxRetry {
-		dataProof, err := backend.client.GetProofs(ctx, [][]byte{blobID}, backend.ns)
+		dataProof, err := backend.client.GetProofs(ctx, [][]byte{blobID}, backend.namespace)
 		if err != nil {
 			log.Infof("Proof not available: %s", err)
 		}
@@ -142,7 +142,7 @@ func (backend *NubitDABackend) GetSequence(ctx context.Context, batchHashes []co
 		return nil, err
 	}
 
-	reply, err := backend.client.Get(ctx, [][]byte{blobData.BlobID}, backend.ns)
+	reply, err := backend.client.Get(ctx, [][]byte{blobData.BlobID}, backend.namespace)
 	if err != nil || len(reply) != 1 {
 		log.Error("Error retrieving blob from NubitDA client: ", err)
 		return nil, err
