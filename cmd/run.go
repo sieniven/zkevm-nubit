@@ -45,6 +45,9 @@ func start(cliCtx *cli.Context) error {
 	}
 
 	da, err := dataavailability.New(isSequencer, daBackend)
+	if err != nil {
+		return err
+	}
 	etherMan.SetDataProvider(da)
 
 	// Initialize eth tx manager instance
