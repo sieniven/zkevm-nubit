@@ -26,7 +26,7 @@ MaxBatchesForL1 = 10
 DAPermitApiPrivateKey = {Path = "/pk/sequencer.keystore", Password = "testonly"}
 
 [DataAvailability]
-NubitRpcURL = "disperser-holesky.eigenda.xyz"
+NubitRpcURL = ""
 NubitModularAppName = 443
 NubitAuthKey = "30s"
 NubitNamespace = "xlayer"

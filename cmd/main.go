@@ -39,14 +39,6 @@ var networkJsonFlag = cli.BoolFlag{
 	Value:    false,
 }
 
-var blobIdFlag = cli.StringFlag{
-	Name:     config.FlagRequestID,
-	Aliases:  []string{"id"},
-	Usage:    "EigenDA blob Request ID",
-	Required: false,
-	Value:    "",
-}
-
 var toFlag = cli.StringFlag{
 	Name:     config.FlagTo,
 	Aliases:  []string{"toaddress"},
@@ -63,24 +55,14 @@ var passwordFlag = cli.StringFlag{
 	Value:    "password",
 }
 
-var adminFlag = cli.StringFlag{
-	Name:     config.FlagAdmin,
-	Aliases:  []string{"adminaddress"},
-	Usage:    "set admin address for zkevm contracts",
-	Required: false,
-	Value:    "",
-}
-
 func main() {
 	app := cli.NewApp()
 	app.Name = appName
 	flags := []cli.Flag{
 		&configFileFlag,
 		&networkJsonFlag,
-		&blobIdFlag,
 		&toFlag,
 		&passwordFlag,
-		&adminFlag,
 	}
 	app.Commands = []*cli.Command{
 		{

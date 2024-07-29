@@ -10,4 +10,3 @@ gen() {
 
 gen polygonvalidium_xlayer
 gen polygonrollupmanager
-gen eigendaverifier

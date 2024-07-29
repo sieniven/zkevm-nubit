@@ -85,12 +85,6 @@ type L1Config struct {
 	ZkEVMAddr common.Address `mapstructure:"polygonZkEVMAddress"`
 	// RollupManagerAddr Address of the L1 contract
 	RollupManagerAddr common.Address `mapstructure:"polygonRollupManagerAddress"`
-	// EigenDARollupUtilsAddr Address of the L1 library
-	EigenDARollupUtilsAddr common.Address `mapstructure:"eigenDARollupUtilsAddress"`
-	// EigenDAVerifierManagerAddr Address of the L1 contract
-	EigenDAVerifierManagerAddr common.Address `mapstructure:"eigenDAVerifierManagerAddress"`
-	// EigenDAServiceManagerAddr Address of the L1 contract
-	EigenDaServiceManagerAddr common.Address `mapstructure:"eigenDAServiceManagerAddress"`
 }
 
 func NewClient(cfg Config, l1Config L1Config) (*Client, error) {
@@ -120,7 +114,7 @@ func NewClient(cfg Config, l1Config L1Config) (*Client, error) {
 		return nil, err
 	}
 	var scAddresses []common.Address
-	scAddresses = append(scAddresses, l1Config.ZkEVMAddr, l1Config.RollupManagerAddr, l1Config.EigenDAVerifierManagerAddr)
+	scAddresses = append(scAddresses, l1Config.ZkEVMAddr, l1Config.RollupManagerAddr)
 
 	gProviders := []ethereum.GasPricer{ethClient}
 
