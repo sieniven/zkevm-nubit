@@ -75,7 +75,7 @@ func TryDecodeFromDataAvailabilityMessage(msg []byte) (BlobData, error) {
 		value := val.Field(i)
 
 		switch field.Name {
-		case "BlobIDs":
+		case "BlobID":
 			blobData.BlobID, err = convertBlobID(value)
 			if err != nil {
 				return BlobData{}, ErrConvertFromABIInterface
