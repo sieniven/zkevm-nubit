@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/ecdsa"
 	"encoding/hex"
+	"strings"
 	"time"
 
 	daTypes "github.com/0xPolygon/cdk-data-availability/types"
@@ -15,12 +16,11 @@ import (
 
 // NubitDABackend implements the DA integration with Nubit DA layer
 type NubitDABackend struct {
-	client      da.DA
-	config      *Config
-	namespace   da.Namespace
-	privKey     *ecdsa.PrivateKey
-	commitTime  time.Time
-	batchesData [][]byte
+	client     da.DA
+	config     *Config
+	namespace  da.Namespace
+	privKey    *ecdsa.PrivateKey
+	commitTime time.Time
 }
 
 // NewNubitDABackend is the factory method to create a new instance of NubitDABackend
@@ -33,8 +33,9 @@ func NewNubitDABackend(
 	if err != nil {
 		return nil, err
 	}
-	// TODO: Check if name byte array requires zero padding
-	name, err := hex.DecodeString(cfg.NubitNamespace)
+
+	hexStr := hex.EncodeToString([]byte(cfg.NubitNamespace))
+	name, err := hex.DecodeString(strings.Repeat("0", 58-len(hexStr)) + hexStr)
 	if err != nil {
 		log.Errorf("error decoding NubitDA namespace config: %+v", err)
 		return nil, err
@@ -45,12 +46,11 @@ func NewNubitDABackend(
 	log.Infof("NubitDABackend namespace: %s ", string(name))
 
 	return &NubitDABackend{
-		config:      cfg,
-		privKey:     privKey,
-		namespace:   name,
-		client:      cn,
-		commitTime:  time.Now(),
-		batchesData: [][]byte{},
+		config:     cfg,
+		privKey:    privKey,
+		namespace:  name,
+		client:     cn,
+		commitTime: time.Now(),
 	}, nil
 }
 
@@ -62,34 +62,23 @@ func (backend *NubitDABackend) Init() error {
 // PostSequence sends the sequence data to the data availability backend, and returns the dataAvailabilityMessage
 // as expected by the contract
 func (backend *NubitDABackend) PostSequence(ctx context.Context, batchesData [][]byte) ([]byte, error) {
-	// Add to batches data cache
-	backend.batchesData = append(backend.batchesData, batchesData...)
-	batchesSize := uint64(len(backend.batchesData))
-	if batchesSize < backend.config.NubitMaxBatchesSize {
-		log.Infof("Added batches data to NubitDABackend cache, current length: %+v", batchesSize)
-		return nil, nil
-	}
-
-	// Commit time interval validation
+	// Check commit time interval validation
 	lastCommitTime := time.Since(backend.commitTime)
 	if lastCommitTime < NubitMinCommitTime {
 		time.Sleep(NubitMinCommitTime - lastCommitTime)
 	}
 
 	// Encode NubitDA blob data
-	data := EncodeSequence(backend.batchesData)
+	data := EncodeSequence(batchesData)
 	ids, err := backend.client.Submit(ctx, [][]byte{data}, -1, backend.namespace)
 	// Ensure only a single blob ID returned
 	if err != nil || len(ids) != 1 {
 		log.Errorf("Submit batch data with NubitDA client failed: %s", err)
 		return nil, err
 	}
+	log.Infof("Data submitted to Nubit DA: %d bytes against namespace %v sent with id %#x", len(data), backend.namespace, blobID)
 	blobID := ids[0]
-	log.Infof("Data submitted to Nubit DA: %d bytes against namespace %v sent with id %#x", batchesSize, backend.namespace, blobID)
-
-	// Reset batches data cache and DA commit time
 	backend.commitTime = time.Now()
-	backend.batchesData = [][]byte{}
 
 	// Get proof of batches data on NubitDA layer
 	tries := uint64(0)
