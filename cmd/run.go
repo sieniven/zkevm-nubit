@@ -33,21 +33,13 @@ func start(cliCtx *cli.Context) error {
 
 	// Create new data avaiability backend and set sequencer flag to false
 	isSequencer := false
-	dacAddr, err := etherMan.GetDAProtocolAddr()
-	if err != nil {
-		return fmt.Errorf("error getting trusted sequencer URI. Error: %v", err)
-	}
 	_, pk, err := etherMan.LoadAuthFromKeyStore(c.SequenceSender.DAPermitApiPrivateKey.Path, c.SequenceSender.DAPermitApiPrivateKey.Password)
 	if err != nil {
 		return err
 	}
 
 	log.Infof("from pk %s", crypto.PubkeyToAddress(pk.PublicKey))
-	daBackend, err := nubit.NewNubitDABackend(
-		dacAddr,
-		pk,
-		&c.DataAvailability,
-	)
+	daBackend, err := nubit.NewNubitDABackend(&c.DataAvailability, pk)
 	if err != nil {
 		return err
 	}
@@ -107,21 +99,13 @@ func newEtherman(c config.Config) (*etherman.Client, error) {
 
 func newDataAvailability(c config.Config, etherMan *etherman.Client) (*dataavailability.DataAvailability, error) {
 	isSequencer := false
-	dacAddr, err := etherMan.GetDAProtocolAddr()
-	if err != nil {
-		return nil, fmt.Errorf("error getting trusted sequencer URI. Error: %v", err)
-	}
 	_, pk, err := etherMan.LoadAuthFromKeyStore(c.SequenceSender.DAPermitApiPrivateKey.Path, c.SequenceSender.DAPermitApiPrivateKey.Password)
 	if err != nil {
 		return nil, err
 	}
 
 	log.Infof("from pk %s", crypto.PubkeyToAddress(pk.PublicKey))
-	daBackend, err := nubit.NewNubitDABackend(
-		dacAddr,
-		pk,
-		&c.DataAvailability,
-	)
+	daBackend, err := nubit.NewNubitDABackend(&c.DataAvailability, pk)
 	if err != nil {
 		return nil, err
 	}
