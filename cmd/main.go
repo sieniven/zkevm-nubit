@@ -90,6 +90,13 @@ func main() {
 			Action:  start,
 			Flags:   flags,
 		},
+		{
+			Name:    "create-keystore",
+			Aliases: []string{},
+			Usage:   "Create new eth keystore",
+			Action:  createKeystore,
+			Flags:   flags,
+		},
 	}
 
 	err := app.Run(os.Args)
