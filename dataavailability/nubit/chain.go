@@ -6,8 +6,7 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi"
 )
 
-// We could pack the batchesData to many formats.
-// For Polygon CDK, it shall be EVM-compatible.
+// MarshalBatchData packs the batch data into ABI-encoded byte array
 func MarshalBatchData(batchData [][]byte) ([]byte, error) {
 	byteArrayType, _ := abi.NewType("bytes[]", "", nil)
 	args := abi.Arguments{
@@ -20,6 +19,7 @@ func MarshalBatchData(batchData [][]byte) ([]byte, error) {
 	return res, nil
 }
 
+// UnmarshalBatchData unpacks the ABI-encoded byte array into batch data
 func UnmarshalBatchData(encodedData []byte) ([][]byte, error) {
 	byteArrayType, _ := abi.NewType("bytes[]", "", nil)
 	args := abi.Arguments{

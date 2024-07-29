@@ -7,37 +7,29 @@ import (
 	"time"
 
 	daTypes "github.com/0xPolygon/cdk-data-availability/types"
-	polygondatacommittee "github.com/0xPolygonHermez/zkevm-node/etherman/smartcontracts/polygondatacommittee_xlayer"
 	"github.com/0xPolygonHermez/zkevm-node/log"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/rollkit/go-da"
 	"github.com/rollkit/go-da/proxy"
 )
 
+// NubitDABackend implements the DA integration with Nubit DA layer
 type NubitDABackend struct {
-	dataCommitteeContract *polygondatacommittee.PolygondatacommitteeXlayer
-	client                da.DA
-	config                *Config
-	ns                    da.Namespace
-	privKey               *ecdsa.PrivateKey
-	commitTime            time.Time
-	batchesDataCache      [][]byte
-	batchesDataSize       uint64
+	client           da.DA
+	config           *Config
+	ns               da.Namespace
+	privKey          *ecdsa.PrivateKey
+	commitTime       time.Time
+	batchesDataCache [][]byte
+	batchesDataSize  uint64
 }
 
+// NewNubitDABackend is the factory method to create a new instance of NubitDABackend
 func NewNubitDABackend(
-	l1RPCURL string,
 	dataCommitteeAddr common.Address,
 	privKey *ecdsa.PrivateKey,
 	cfg *Config,
 ) (*NubitDABackend, error) {
-	ethClient, err := ethclient.Dial(l1RPCURL)
-	if err != nil {
-		log.Errorf("error connecting to %s: %+v", l1RPCURL, err)
-		return nil, err
-	}
-
 	log.Infof("NubitDABackend config: %#v ", cfg)
 	cn, err := proxy.NewClient(cfg.NubitRpcURL, cfg.NubitAuthKey)
 	if err != nil {
@@ -49,25 +41,24 @@ func NewNubitDABackend(
 		log.Errorf("error decoding NubitDA namespace config: %+v", err)
 		return nil, err
 	}
-	dataCommittee, err := polygondatacommittee.NewPolygondatacommitteeXlayer(dataCommitteeAddr, ethClient)
 	if err != nil {
 		return nil, err
 	}
 	log.Infof("NubitDABackend namespace: %s ", string(name))
 
 	return &NubitDABackend{
-		dataCommitteeContract: dataCommittee,
-		config:                cfg,
-		privKey:               privKey,
-		ns:                    name,
-		client:                cn,
-		commitTime:            time.Now(),
-		batchesDataCache:      [][]byte{},
-		batchesDataSize:       0,
+		config:           cfg,
+		privKey:          privKey,
+		ns:               name,
+		client:           cn,
+		commitTime:       time.Now(),
+		batchesDataCache: [][]byte{},
+		batchesDataSize:  0,
 	}, nil
 }
 
-func (a *NubitDABackend) Init() error {
+// Init initializes the NubitDA backend
+func (backend *NubitDABackend) Init() error {
 	return nil
 }
 
@@ -153,7 +144,8 @@ func (backend *NubitDABackend) PostSequence(ctx context.Context, batchesData [][
 	return signature, nil
 }
 
-func (a *NubitDABackend) GetSequence(ctx context.Context, batchHashes []common.Hash, dataAvailabilityMessage []byte) ([][]byte, error) {
+// GetSequence gets the sequence data from NubitDA layer
+func (backend *NubitDABackend) GetSequence(ctx context.Context, batchHashes []common.Hash, dataAvailabilityMessage []byte) ([][]byte, error) {
 	batchDAData := BatchDAData{}
 	err := batchDAData.Decode(dataAvailabilityMessage)
 	if err != nil {
@@ -161,15 +153,12 @@ func (a *NubitDABackend) GetSequence(ctx context.Context, batchHashes []common.H
 		return nil, err
 	}
 	log.Infof("🏆     Nubit GetSequence batchDAData:%+v", batchDAData)
-	blob, err := a.client.Get(ctx, batchDAData.ID, a.ns)
+	blob, err := backend.client.Get(ctx, batchDAData.ID, backend.ns)
 	if err != nil {
 		log.Errorf("🏆    NubitDABackend.GetSequence.Blob.Get:%s", err)
 		return nil, err
 	}
 	log.Infof("🏆     Nubit GetSequence blob.data:%+v", len(blob))
-	byteBlob := make([][]byte, len(blob))
-	for _, b := range blob {
-		byteBlob = append(byteBlob, b)
-	}
-	return byteBlob, nil
+
+	return blob, nil
 }

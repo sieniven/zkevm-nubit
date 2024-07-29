@@ -44,7 +44,6 @@ func start(cliCtx *cli.Context) error {
 
 	log.Infof("from pk %s", crypto.PubkeyToAddress(pk.PublicKey))
 	daBackend, err := nubit.NewNubitDABackend(
-		c.Etherman.URL,
 		dacAddr,
 		pk,
 		&c.DataAvailability,
@@ -119,7 +118,6 @@ func newDataAvailability(c config.Config, etherMan *etherman.Client) (*dataavail
 
 	log.Infof("from pk %s", crypto.PubkeyToAddress(pk.PublicKey))
 	daBackend, err := nubit.NewNubitDABackend(
-		c.Etherman.URL,
 		dacAddr,
 		pk,
 		&c.DataAvailability,

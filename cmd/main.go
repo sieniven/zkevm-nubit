@@ -97,6 +97,13 @@ func main() {
 			Action:  createKeystore,
 			Flags:   flags,
 		},
+		{
+			Name:    "test-offchain",
+			Aliases: []string{},
+			Usage:   "Test the full mock node offchain pipeline",
+			Action:  testOffchain,
+			Flags:   flags,
+		},
 	}
 
 	err := app.Run(os.Args)

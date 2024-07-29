@@ -2,6 +2,7 @@ package nubit
 
 import "time"
 
+// Config is the NubitDA backend configurations
 type Config struct {
 	NubitRpcURL             string        `mapstructure:"NubitRpcURL"`
 	NubitModularAppName     string        `mapstructure:"NubitModularAppName"`
