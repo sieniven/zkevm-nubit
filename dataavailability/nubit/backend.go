@@ -76,9 +76,9 @@ func (backend *NubitDABackend) PostSequence(ctx context.Context, batchesData [][
 		log.Errorf("Submit batch data with NubitDA client failed: %s", err)
 		return nil, err
 	}
-	log.Infof("Data submitted to Nubit DA: %d bytes against namespace %v sent with id %#x", len(data), backend.namespace, blobID)
 	blobID := ids[0]
 	backend.commitTime = time.Now()
+	log.Infof("Data submitted to Nubit DA: %d bytes against namespace %v sent with id %#x", len(data), backend.namespace, blobID)
 
 	// Get proof of batches data on NubitDA layer
 	tries := uint64(0)
