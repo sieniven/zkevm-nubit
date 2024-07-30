@@ -27,7 +27,7 @@ DAPermitApiPrivateKey = {Path = "/pk/sequencer.keystore", Password = "testonly"}
 
 [DataAvailability]
 NubitRpcURL = "http://127.0.0.1:26658"
-NubitAuthKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJwdWJsaWMiLCJyZWFkIiwid3JpdGUiLCJhZG1pbiJdfQ.DAMv0s7915Ahx-kDFSzDT1ATz4Q9WwktWcHmjp7_99Q"
+NubitAuthKey = ""
 NubitNamespace = "xlayer"
 NubitGetProofMaxRetry = "10"
 NubitGetProofWaitPeriod = "5s"

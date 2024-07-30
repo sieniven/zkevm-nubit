@@ -35,7 +35,7 @@ func NewNubitDABackend(
 	}
 
 	hexStr := hex.EncodeToString([]byte(cfg.NubitNamespace))
-	name, err := hex.DecodeString(strings.Repeat("0", 58-len(hexStr)) + hexStr)
+	name, err := hex.DecodeString(strings.Repeat("0", NubitNamespaceBytesLength-len(hexStr)) + hexStr)
 	if err != nil {
 		log.Errorf("error decoding NubitDA namespace config: %+v", err)
 		return nil, err
