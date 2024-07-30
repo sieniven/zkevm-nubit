@@ -21,7 +21,7 @@ import (
 func TestOffchainPipeline(t *testing.T) {
 	cfg := Config{
 		NubitRpcURL:             "http://127.0.0.1:26658",
-		NubitAuthKey:            "",
+		NubitAuthKey:            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJwdWJsaWMiLCJyZWFkIiwid3JpdGUiLCJhZG1pbiJdfQ.N4tKbe6t-xPZBWR06hF3hfjlnAhBDzxjfA95aRixkSo",
 		NubitNamespace:          "xlayer",
 		NubitGetProofMaxRetry:   10,
 		NubitGetProofWaitPeriod: 5 * time.Second,
@@ -69,7 +69,7 @@ func TestOffchainPipeline(t *testing.T) {
 func TestOffchainPipelineWithRandomData(t *testing.T) {
 	cfg := Config{
 		NubitRpcURL:             "http://127.0.0.1:26658",
-		NubitAuthKey:            "",
+		NubitAuthKey:            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJwdWJsaWMiLCJyZWFkIiwid3JpdGUiLCJhZG1pbiJdfQ.N4tKbe6t-xPZBWR06hF3hfjlnAhBDzxjfA95aRixkSo",
 		NubitNamespace:          "xlayer",
 		NubitGetProofMaxRetry:   10,
 		NubitGetProofWaitPeriod: 5 * time.Second,

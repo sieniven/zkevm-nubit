@@ -94,43 +94,43 @@ func NewClient(cfg Config, l1Config L1Config) (*Client, error) {
 		fmt.Printf("error connecting to %s: %+v\n", cfg.URL, err)
 		return nil, err
 	}
-	// Create smc clients
-	zkevm, err := polygonzkevm.NewPolygonvalidiumXlayer(l1Config.ZkEVMAddr, ethClient)
-	if err != nil {
-		fmt.Printf("error creating Polygonzkevm client (%s)\n", l1Config.ZkEVMAddr.String())
-		return nil, err
-	}
-	rollupManager, err := polygonrollupmanager.NewPolygonrollupmanager(l1Config.RollupManagerAddr, ethClient)
-	if err != nil {
-		fmt.Printf("error creating NewPolygonrollupmanager client (%s)\n", l1Config.RollupManagerAddr.String())
-		return nil, err
-	}
-	dapAddr, err := zkevm.DataAvailabilityProtocol(&bind.CallOpts{Pending: false})
-	if err != nil {
-		return nil, err
-	}
-	dap, err := dataavailabilityprotocol.NewDataavailabilityprotocol(dapAddr, ethClient)
-	if err != nil {
-		return nil, err
-	}
-	var scAddresses []common.Address
-	scAddresses = append(scAddresses, l1Config.ZkEVMAddr, l1Config.RollupManagerAddr)
+	// // Create smc clients
+	// zkevm, err := polygonzkevm.NewPolygonvalidiumXlayer(l1Config.ZkEVMAddr, ethClient)
+	// if err != nil {
+	// 	fmt.Printf("error creating Polygonzkevm client (%s)\n", l1Config.ZkEVMAddr.String())
+	// 	return nil, err
+	// }
+	// rollupManager, err := polygonrollupmanager.NewPolygonrollupmanager(l1Config.RollupManagerAddr, ethClient)
+	// if err != nil {
+	// 	fmt.Printf("error creating NewPolygonrollupmanager client (%s)\n", l1Config.RollupManagerAddr.String())
+	// 	return nil, err
+	// }
+	// dapAddr, err := zkevm.DataAvailabilityProtocol(&bind.CallOpts{Pending: false})
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// dap, err := dataavailabilityprotocol.NewDataavailabilityprotocol(dapAddr, ethClient)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// var scAddresses []common.Address
+	// scAddresses = append(scAddresses, l1Config.ZkEVMAddr, l1Config.RollupManagerAddr)
 
 	gProviders := []ethereum.GasPricer{ethClient}
 
-	// get RollupID
-	rollupID, err := rollupManager.RollupAddressToID(&bind.CallOpts{Pending: false}, l1Config.RollupManagerAddr)
-	if err != nil {
-		fmt.Printf("error rollupManager.RollupAddressToID(%s)\n", l1Config.RollupManagerAddr)
-	}
+	// // get RollupID
+	// rollupID, err := rollupManager.RollupAddressToID(&bind.CallOpts{Pending: false}, l1Config.RollupManagerAddr)
+	// if err != nil {
+	// 	fmt.Printf("error rollupManager.RollupAddressToID(%s)\n", l1Config.RollupManagerAddr)
+	// }
 
 	return &Client{
-		EthClient:     ethClient,
-		ZkEVM:         zkevm,
-		RollupManager: rollupManager,
-		DAProtocol:    dap,
-		SCAddresses:   scAddresses,
-		RollupID:      rollupID,
+		EthClient: ethClient,
+		// ZkEVM:         zkevm,
+		// RollupManager: rollupManager,
+		// DAProtocol:    dap,
+		// SCAddresses:   scAddresses,
+		// RollupID:      rollupID,
 		GasProviders: externalGasProviders{
 			MultiGasProvider: false,
 			Providers:        gProviders,
