@@ -13,6 +13,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/rollkit/go-da/proxy"
+	"github.com/sieniven/zkevm-nubit/config/types"
 	"github.com/sieniven/zkevm-nubit/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -24,7 +25,7 @@ func TestOffchainPipeline(t *testing.T) {
 		NubitAuthKey:            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJwdWJsaWMiLCJyZWFkIiwid3JpdGUiLCJhZG1pbiJdfQ.N4tKbe6t-xPZBWR06hF3hfjlnAhBDzxjfA95aRixkSo",
 		NubitNamespace:          "xlayer",
 		NubitGetProofMaxRetry:   10,
-		NubitGetProofWaitPeriod: 5 * time.Second,
+		NubitGetProofWaitPeriod: types.NewDuration(5 * time.Second),
 	}
 	pk, err := ecdsa.GenerateKey(elliptic.P256(), crand.Reader)
 	require.NoError(t, err)
@@ -72,7 +73,7 @@ func TestOffchainPipelineWithRandomData(t *testing.T) {
 		NubitAuthKey:            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBbGxvdyI6WyJwdWJsaWMiLCJyZWFkIiwid3JpdGUiLCJhZG1pbiJdfQ.N4tKbe6t-xPZBWR06hF3hfjlnAhBDzxjfA95aRixkSo",
 		NubitNamespace:          "xlayer",
 		NubitGetProofMaxRetry:   10,
-		NubitGetProofWaitPeriod: 5 * time.Second,
+		NubitGetProofWaitPeriod: types.NewDuration(5 * time.Second),
 	}
 	pk, err := ecdsa.GenerateKey(elliptic.P256(), crand.Reader)
 	require.NoError(t, err)
